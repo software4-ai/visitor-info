@@ -1,121 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Advanced Visitor Info</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#111111">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Info Analyzer</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+
+<style>
+body {
+    background: #111;
+    color: #00ff88;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+h2, h3 {
+    color: #ffffff;
+}
+p {
+    margin: 6px 0;
+}
+span {
+    color: #00ffff;
+}
+</style>
+
 </head>
 <body>
-    <h2>Advanced Device Information</h2>
 
-    <p><b>Browser:</b> <span id="browser"></span></p>
-    <p><b>Platform:</b> <span id="platform"></span></p>
-    <p><b>Device Type:</b> <span id="device"></span></p>
-    <p><b>Screen Resolution:</b> <span id="screen"></span></p>
-    <p><b>Language:</b> <span id="language"></span></p>
-    <p><b>Timezone:</b> <span id="timezone"></span></p>
-    <p><b>CPU Cores:</b> <span id="cpu"></span></p>
-    <p><b>Device Memory (RAM):</b> <span id="ram"></span></p>
-    <p><b>Network Type:</b> <span id="network"></span></p>
-    <p><b>Battery Level:</b> <span id="battery"></span></p>
-    <p><b>Charging:</b> <span id="charging"></span></p>
-    <p><b>Your Public IP:</b> <span id="ip"></span></p>
+<h2>Advanced Device Information</h2>
 
-    <h3>Location Information</h3>
-    <p><b>Latitude:</b> <span id="lat"></span></p>
-    <p><b>Longitude:</b> <span id="lon"></span></p>
-    <p><b>Accuracy:</b> <span id="accuracy"></span></p>
+<p><b>Browser:</b> <span id="browser"></span></p>
+<p><b>Platform:</b> <span id="platform"></span></p>
+<p><b>Device Type:</b> <span id="device"></span></p>
+<p><b>Screen Resolution:</b> <span id="screen"></span></p>
+<p><b>Language:</b> <span id="language"></span></p>
+<p><b>Timezone:</b> <span id="timezone"></span></p>
+<p><b>CPU Cores:</b> <span id="cpu"></span></p>
+<p><b>Device Memory (RAM):</b> <span id="ram"></span></p>
+<p><b>Network Type:</b> <span id="network"></span></p>
+<p><b>Battery Level:</b> <span id="battery"></span></p>
+<p><b>Charging:</b> <span id="charging"></span></p>
+<p><b>Your Public IP:</b> <span id="ip"></span></p>
+
+<h3>Location Information</h3>
+<p><b>Latitude:</b> <span id="lat"></span></p>
+<p><b>Longitude:</b> <span id="lon"></span></p>
+<p><b>Accuracy:</b> <span id="accuracy"></span></p>
 
 <script>
 
-    // Basic Info
-    document.getElementById("browser").innerText = navigator.userAgent;
-    document.getElementById("platform").innerText = navigator.platform;
-    document.getElementById("screen").innerText = screen.width + " x " + screen.height;
-    document.getElementById("language").innerText = navigator.language;
-    document.getElementById("timezone").innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    document.getElementById("cpu").innerText = navigator.hardwareConcurrency || "Not Available";
-    document.getElementById("ram").innerText = navigator.deviceMemory ? navigator.deviceMemory + " GB (approx)" : "Not Available";
+// Basic Info
+document.getElementById("browser").innerText = navigator.userAgent;
+document.getElementById("platform").innerText = navigator.platform;
+document.getElementById("screen").innerText = screen.width + " x " + screen.height;
+document.getElementById("language").innerText = navigator.language;
+document.getElementById("timezone").innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+document.getElementById("cpu").innerText = navigator.hardwareConcurrency || "Not Available";
+document.getElementById("ram").innerText = navigator.deviceMemory ? navigator.deviceMemory + " GB (approx)" : "Not Available";
 
-    // Device Type Detection
-    function getDeviceType() {
-        const ua = navigator.userAgent;
-        if (/mobile/i.test(ua)) return "Mobile";
-        if (/tablet/i.test(ua)) return "Tablet";
-        return "Desktop";
-    }
-    document.getElementById("device").innerText = getDeviceType();
+// Device Type
+function getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/mobile/i.test(ua)) return "Mobile";
+    if (/tablet/i.test(ua)) return "Tablet";
+    return "Desktop";
+}
+document.getElementById("device").innerText = getDeviceType();
 
-    // Network Information
-    if (navigator.connection) {
-        document.getElementById("network").innerText = navigator.connection.effectiveType;
-    } else {
-        document.getElementById("network").innerText = "Not Available";
-    }
+// Network
+if (navigator.connection) {
+    document.getElementById("network").innerText = navigator.connection.effectiveType;
+} else {
+    document.getElementById("network").innerText = "Not Available";
+}
 
-    // Battery Information
-    if (navigator.getBattery) {
-        navigator.getBattery().then(function(battery) {
-            document.getElementById("battery").innerText = (battery.level * 100) + "%";
-            document.getElementById("charging").innerText = battery.charging ? "Yes" : "No";
-        });
-    } else {
-        document.getElementById("battery").innerText = "Not Available";
-        document.getElementById("charging").innerText = "Not Available";
-    }
-
-    // Fetch Public IP
-    fetch("https://api.ipify.org?format=json")
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("ip").innerText = data.ip;
+// Battery
+if (navigator.getBattery) {
+    navigator.getBattery().then(function(battery) {
+        document.getElementById("battery").innerText = (battery.level * 100) + "%";
+        document.getElementById("charging").innerText = battery.charging ? "Yes" : "No";
     });
+} else {
+    document.getElementById("battery").innerText = "Not Available";
+    document.getElementById("charging").innerText = "Not Available";
+}
 
-    // Improved Geolocation
-    if ("geolocation" in navigator) {
+// Public IP
+fetch("https://api.ipify.org?format=json")
+.then(response => response.json())
+.then(data => {
+    document.getElementById("ip").innerText = data.ip;
+})
+.catch(() => {
+    document.getElementById("ip").innerText = "Unable to fetch IP";
+});
 
-        document.getElementById("lat").innerText = "Detecting...";
-        document.getElementById("lon").innerText = "Detecting...";
-        document.getElementById("accuracy").innerText = "Detecting...";
+// Geolocation
+if ("geolocation" in navigator) {
 
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                document.getElementById("lat").innerText = position.coords.latitude;
-                document.getElementById("lon").innerText = position.coords.longitude;
-                document.getElementById("accuracy").innerText = position.coords.accuracy + " meters";
-                console.log("Location success:", position);
-            },
-            function(error) {
-                console.log("Error code:", error.code);
-                console.log("Error message:", error.message);
+    document.getElementById("lat").innerText = "Detecting...";
+    document.getElementById("lon").innerText = "Detecting...";
+    document.getElementById("accuracy").innerText = "Detecting...";
 
-                document.getElementById("lat").innerText = "Error: " + error.message;
-                document.getElementById("lon").innerText = "-";
-                document.getElementById("accuracy").innerText = "-";
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            document.getElementById("lat").innerText = position.coords.latitude;
+            document.getElementById("lon").innerText = position.coords.longitude;
+            document.getElementById("accuracy").innerText = position.coords.accuracy + " meters";
+        },
+        function(error) {
+            document.getElementById("lat").innerText = error.message;
+            document.getElementById("lon").innerText = "-";
+            document.getElementById("accuracy").innerText = "-";
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
 
-    } else {
-        document.getElementById("lat").innerText = "Not Supported";
-        document.getElementById("lon").innerText = "Not Supported";
-        document.getElementById("accuracy").innerText = "Not Supported";
-    }
-    <script>
+} else {
+    document.getElementById("lat").innerText = "Not Supported";
+    document.getElementById("lon").innerText = "Not Supported";
+    document.getElementById("accuracy").innerText = "Not Supported";
+}
+
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
+    navigator.serviceWorker.register('sw.js')
     .then(function() {
-      console.log("Service Worker Registered");
+        console.log("Service Worker Registered");
     });
 }
-</script>
 
 </script>
 
 </body>
 </html>
-
