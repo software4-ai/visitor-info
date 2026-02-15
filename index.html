@@ -5,137 +5,202 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Device Info Analyzer</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#0f172a">
 
 <style>
 body {
-    background: #111;
-    color: #00ff88;
-    font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+header {
+    text-align: center;
     padding: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    background: #111827;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
-h2, h3 {
-    color: #ffffff;
+
+.version {
+    font-size: 12px;
+    opacity: 0.6;
 }
-p {
+
+.container {
+    padding: 15px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.card h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 5px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
     margin: 6px 0;
+    font-size: 14px;
 }
-span {
-    color: #00ffff;
+
+button {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.install-btn {
+    display: block;
+    margin: 15px auto;
+}
+iframe {
+    width: 100%;
+    height: 250px;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 </style>
-
 </head>
 <body>
 
-<h2>Advanced Device Information</h2>
+<header>
+Device Info Analyzer
+<div class="version">Version 2.0</div>
+</header>
 
-<p><b>Browser:</b> <span id="browser"></span></p>
-<p><b>Platform:</b> <span id="platform"></span></p>
-<p><b>Device Type:</b> <span id="device"></span></p>
-<p><b>Screen Resolution:</b> <span id="screen"></span></p>
-<p><b>Language:</b> <span id="language"></span></p>
-<p><b>Timezone:</b> <span id="timezone"></span></p>
-<p><b>CPU Cores:</b> <span id="cpu"></span></p>
-<p><b>Device Memory (RAM):</b> <span id="ram"></span></p>
-<p><b>Network Type:</b> <span id="network"></span></p>
-<p><b>Battery Level:</b> <span id="battery"></span></p>
-<p><b>Charging:</b> <span id="charging"></span></p>
-<p><b>Your Public IP:</b> <span id="ip"></span></p>
+<div class="container">
 
-<h3>Location Information</h3>
-<p><b>Latitude:</b> <span id="lat"></span></p>
-<p><b>Longitude:</b> <span id="lon"></span></p>
-<p><b>Accuracy:</b> <span id="accuracy"></span></p>
+<button class="install-btn" id="installBtn" style="display:none;">Install App</button>
+
+<div class="card">
+<h3>Device Information</h3>
+<div class="row"><span>Browser</span><span id="browser"></span></div>
+<div class="row"><span>Platform</span><span id="platform"></span></div>
+<div class="row"><span>Device Type</span><span id="device"></span></div>
+<div class="row"><span>Screen</span><span id="screen"></span></div>
+<div class="row"><span>Language</span><span id="language"></span></div>
+<div class="row"><span>Timezone</span><span id="timezone"></span></div>
+<div class="row"><span>CPU Cores</span><span id="cpu"></span></div>
+<div class="row"><span>RAM</span><span id="ram"></span></div>
+<div class="row"><span>Network</span><span id="network"></span></div>
+<div class="row"><span>Battery</span><span id="battery"></span></div>
+<div class="row"><span>Charging</span><span id="charging"></span></div>
+<div class="row">
+<span>Public IP</span>
+<span id="ip"></span>
+<button onclick="copyText('ip')">Copy</button>
+</div>
+</div>
+
+<div class="card">
+<h3>Location</h3>
+<div class="row"><span>Latitude</span><span id="lat"></span></div>
+<div class="row"><span>Longitude</span><span id="lon"></span></div>
+<div class="row"><span>Accuracy</span><span id="accuracy"></span></div>
+<iframe id="map" style="display:none;"></iframe>
+</div>
+
+</div>
 
 <script>
 
+// Copy function
+function copyText(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied: " + text);
+}
+
 // Basic Info
-document.getElementById("browser").innerText = navigator.userAgent;
-document.getElementById("platform").innerText = navigator.platform;
-document.getElementById("screen").innerText = screen.width + " x " + screen.height;
-document.getElementById("language").innerText = navigator.language;
-document.getElementById("timezone").innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
-document.getElementById("cpu").innerText = navigator.hardwareConcurrency || "Not Available";
-document.getElementById("ram").innerText = navigator.deviceMemory ? navigator.deviceMemory + " GB (approx)" : "Not Available";
+browser.innerText = navigator.userAgent;
+platform.innerText = navigator.platform;
+screen.innerText = window.screen.width + " x " + window.screen.height;
+language.innerText = navigator.language;
+timezone.innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+cpu.innerText = navigator.hardwareConcurrency || "N/A";
+ram.innerText = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "N/A";
 
-// Device Type
-function getDeviceType() {
-    const ua = navigator.userAgent;
-    if (/mobile/i.test(ua)) return "Mobile";
-    if (/tablet/i.test(ua)) return "Tablet";
-    return "Desktop";
-}
-document.getElementById("device").innerText = getDeviceType();
+device.innerText = /mobile/i.test(navigator.userAgent) ? "Mobile" : "Desktop";
 
-// Network
-if (navigator.connection) {
-    document.getElementById("network").innerText = navigator.connection.effectiveType;
-} else {
-    document.getElementById("network").innerText = "Not Available";
-}
+if (navigator.connection) network.innerText = navigator.connection.effectiveType;
+else network.innerText = "N/A";
 
 // Battery
 if (navigator.getBattery) {
-    navigator.getBattery().then(function(battery) {
-        document.getElementById("battery").innerText = (battery.level * 100) + "%";
-        document.getElementById("charging").innerText = battery.charging ? "Yes" : "No";
-    });
-} else {
-    document.getElementById("battery").innerText = "Not Available";
-    document.getElementById("charging").innerText = "Not Available";
-}
-
-// Public IP
-fetch("https://api.ipify.org?format=json")
-.then(response => response.json())
-.then(data => {
-    document.getElementById("ip").innerText = data.ip;
-})
-.catch(() => {
-    document.getElementById("ip").innerText = "Unable to fetch IP";
+navigator.getBattery().then(b => {
+battery.innerText = (b.level * 100) + "%";
+charging.innerText = b.charging ? "Yes" : "No";
 });
-
-// Geolocation
-if ("geolocation" in navigator) {
-
-    document.getElementById("lat").innerText = "Detecting...";
-    document.getElementById("lon").innerText = "Detecting...";
-    document.getElementById("accuracy").innerText = "Detecting...";
-
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            document.getElementById("lat").innerText = position.coords.latitude;
-            document.getElementById("lon").innerText = position.coords.longitude;
-            document.getElementById("accuracy").innerText = position.coords.accuracy + " meters";
-        },
-        function(error) {
-            document.getElementById("lat").innerText = error.message;
-            document.getElementById("lon").innerText = "-";
-            document.getElementById("accuracy").innerText = "-";
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-    );
-
-} else {
-    document.getElementById("lat").innerText = "Not Supported";
-    document.getElementById("lon").innerText = "Not Supported";
-    document.getElementById("accuracy").innerText = "Not Supported";
 }
 
-// Service Worker Registration
+// IP
+fetch("https://api.ipify.org?format=json")
+.then(r => r.json())
+.then(d => ip.innerText = d.ip)
+.catch(() => ip.innerText = "Unavailable");
+
+// Location
+if (navigator.geolocation) {
+lat.innerText = "Detecting...";
+lon.innerText = "Detecting...";
+accuracy.innerText = "Detecting...";
+
+navigator.geolocation.getCurrentPosition(pos => {
+lat.innerText = pos.coords.latitude;
+lon.innerText = pos.coords.longitude;
+accuracy.innerText = pos.coords.accuracy + " meters";
+
+map.style.display = "block";
+map.src = `https://maps.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}&z=15&output=embed`;
+
+}, err => {
+lat.innerText = err.message;
+lon.innerText = "-";
+accuracy.innerText = "-";
+});
+}
+
+// Service Worker
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-    .then(function() {
-        console.log("Service Worker Registered");
-    });
+navigator.serviceWorker.register('sw.js');
 }
+
+// Install Button
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+e.preventDefault();
+deferredPrompt = e;
+installBtn.style.display = "block";
+
+installBtn.addEventListener('click', () => {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then(() => {
+installBtn.style.display = "none";
+});
+});
+});
 
 </script>
 
