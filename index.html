@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>Device Scanner</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
 </head>
+
 <body style="background:#0f172a;color:white;font-family:sans-serif;padding:20px;">
 
 <h2>Device Scanner (Learning Demo)</h2>
 <p>This demo collects device info for educational purposes.</p>
-<button onclick="collectData()">Start Scan & Share</button>
+
+<button id="scanBtn">Start Scan & Share</button>
 
 <script type="module">
 
@@ -30,7 +30,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-window.collectData = async function() {
+document.getElementById("scanBtn").addEventListener("click", async () => {
 
 let data = {
   browser: navigator.userAgent,
@@ -67,8 +67,9 @@ await push(ref(database, "scans"), data);
 alert("Data Shared Successfully!");
 }
 
-};
+});
 
 </script>
+
 </body>
 </html>
