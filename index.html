@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Advanced Visitor Info</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
 </head>
 <body>
     <h2>Advanced Device Information</h2>
@@ -103,8 +105,17 @@
         document.getElementById("lon").innerText = "Not Supported";
         document.getElementById("accuracy").innerText = "Not Supported";
     }
+    <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(function() {
+      console.log("Service Worker Registered");
+    });
+}
+</script>
 
 </script>
 
 </body>
 </html>
+
