@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Visitor Info</title>
+</head>
+<body>
+    <h2>Advanced Device Information</h2>
+
+    <p><b>Browser:</b> <span id="browser"></span></p>
+    <p><b>Platform:</b> <span id="platform"></span></p>
+    <p><b>Device Type:</b> <span id="device"></span></p>
+    <p><b>Screen Resolution:</b> <span id="screen"></span></p>
+    <p><b>Language:</b> <span id="language"></span></p>
+    <p><b>Timezone:</b> <span id="timezone"></span></p>
+    <p><b>CPU Cores:</b> <span id="cpu"></span></p>
+    <p><b>Device Memory (RAM):</b> <span id="ram"></span></p>
+    <p><b>Network Type:</b> <span id="network"></span></p>
+    <p><b>Battery Level:</b> <span id="battery"></span></p>
+    <p><b>Charging:</b> <span id="charging"></span></p>
+    <p><b>Your Public IP:</b> <span id="ip"></span></p>
+
+<script>
+
+    // Basic Info
+    document.getElementById("browser").innerText = navigator.userAgent;
+    document.getElementById("platform").innerText = navigator.platform;
+    document.getElementById("screen").innerText = screen.width + " x " + screen.height;
+    document.getElementById("language").innerText = navigator.language;
+    document.getElementById("timezone").innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById("cpu").innerText = navigator.hardwareConcurrency || "Not Available";
+    document.getElementById("ram").innerText = navigator.deviceMemory ? navigator.deviceMemory + " GB (approx)" : "Not Available";
+
+    // Device Type Detection
+    function getDeviceType() {
+        const ua = navigator.userAgent;
+        if (/mobile/i.test(ua)) return "Mobile";
+        if (/tablet/i.test(ua)) return "Tablet";
+        return "Desktop";
+    }
+    document.getElementById("device").innerText = getDeviceType();
+
+    // Network Information
+    if (navigator.connection) {
+        document.getElementById("network").innerText = navigator.connection.effectiveType;
+    } else {
+        document.getElementById("network").innerText = "Not Available";
+    }
+
+    // Battery Information
+    if (navigator.getBattery) {
+        navigator.getBattery().then(function(battery) {
+            document.getElementById("battery").innerText = (battery.level * 100) + "%";
+            document.getElementById("charging").innerText = battery.charging ? "Yes" : "No";
+        });
+    } else {
+        document.getElementById("battery").innerText = "Not Available";
+        document.getElementById("charging").innerText = "Not Available";
+    }
+
+    // Fetch Public IP
+    fetch("https://api.ipify.org?format=json")
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("ip").innerText = data.ip;
+    });
+
+</script>
+
+</body>
+</html>
