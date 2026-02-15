@@ -69,20 +69,35 @@
         document.getElementById("ip").innerText = data.ip;
     });
 
-    // Geolocation
-    if (navigator.geolocation) {
+    // Improved Geolocation
+    if ("geolocation" in navigator) {
+
+        document.getElementById("lat").innerText = "Detecting...";
+        document.getElementById("lon").innerText = "Detecting...";
+        document.getElementById("accuracy").innerText = "Detecting...";
+
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 document.getElementById("lat").innerText = position.coords.latitude;
                 document.getElementById("lon").innerText = position.coords.longitude;
                 document.getElementById("accuracy").innerText = position.coords.accuracy + " meters";
+                console.log("Location success:", position);
             },
             function(error) {
-                document.getElementById("lat").innerText = "Permission Denied";
-                document.getElementById("lon").innerText = "Permission Denied";
-                document.getElementById("accuracy").innerText = "Permission Denied";
+                console.log("Error code:", error.code);
+                console.log("Error message:", error.message);
+
+                document.getElementById("lat").innerText = "Error: " + error.message;
+                document.getElementById("lon").innerText = "-";
+                document.getElementById("accuracy").innerText = "-";
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
         );
+
     } else {
         document.getElementById("lat").innerText = "Not Supported";
         document.getElementById("lon").innerText = "Not Supported";
