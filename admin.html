@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Live Dashboard</title>
+</head>
+<body style="background:#111;color:#00ffcc;font-family:sans-serif;padding:20px;">
+
+<h2>Real-Time Device Dashboard</h2>
+<div id="data"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "PASTE_YOURS",
+  authDomain: "PASTE_YOURS",
+  databaseURL: "PASTE_YOURS",
+  projectId: "PASTE_YOURS",
+  storageBucket: "PASTE_YOURS",
+  messagingSenderId: "PASTE_YOURS",
+  appId: "PASTE_YOURS"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+const dataDiv = document.getElementById("data");
+
+onValue(ref(database, "scans"), (snapshot) => {
+dataDiv.innerHTML = "";
+snapshot.forEach(child => {
+let d = child.val();
+dataDiv.innerHTML += `
+<div style="border:1px solid #333;padding:10px;margin-bottom:10px;">
+IP: ${d.ip}<br>
+Browser: ${d.browser}<br>
+Platform: ${d.platform}<br>
+Screen: ${d.screen}<br>
+Lat: ${d.latitude || "-"}<br>
+Lon: ${d.longitude || "-"}<br>
+Time: ${d.timestamp}
+</div>
+`;
+});
+});
+
+</script>
+</body>
+</html>
