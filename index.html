@@ -19,6 +19,11 @@
     <p><b>Charging:</b> <span id="charging"></span></p>
     <p><b>Your Public IP:</b> <span id="ip"></span></p>
 
+    <h3>Location Information</h3>
+    <p><b>Latitude:</b> <span id="lat"></span></p>
+    <p><b>Longitude:</b> <span id="lon"></span></p>
+    <p><b>Accuracy:</b> <span id="accuracy"></span></p>
+
 <script>
 
     // Basic Info
@@ -63,6 +68,26 @@
     .then(data => {
         document.getElementById("ip").innerText = data.ip;
     });
+
+    // Geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                document.getElementById("lat").innerText = position.coords.latitude;
+                document.getElementById("lon").innerText = position.coords.longitude;
+                document.getElementById("accuracy").innerText = position.coords.accuracy + " meters";
+            },
+            function(error) {
+                document.getElementById("lat").innerText = "Permission Denied";
+                document.getElementById("lon").innerText = "Permission Denied";
+                document.getElementById("accuracy").innerText = "Permission Denied";
+            }
+        );
+    } else {
+        document.getElementById("lat").innerText = "Not Supported";
+        document.getElementById("lon").innerText = "Not Supported";
+        document.getElementById("accuracy").innerText = "Not Supported";
+    }
 
 </script>
 
